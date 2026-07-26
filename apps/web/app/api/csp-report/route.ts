@@ -1,20 +1,20 @@
-import { NextRequest, NextResponse } from "next/server"
-import { ValidationError } from "@/lib/api/errors"
-import { withErrorHandling } from "@/lib/api/withErrorHandling"
+import { NextRequest, NextResponse } from "next/server";
+import { ValidationError } from "@/lib/api/errors";
+import { withErrorHandling } from "@/lib/api/withErrorHandling";
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
-  const rawBody = await req.text()
+  const rawBody = await req.text();
   if (!rawBody) {
-    throw new ValidationError("Empty body")
+    throw new ValidationError("Empty body");
   }
 
-  let data: Record<string, unknown>
+  let data: Record<string, unknown>;
   try {
-    data = JSON.parse(rawBody)
+    data = JSON.parse(rawBody);
   } catch {
-    throw new ValidationError("Invalid JSON body")
+    throw new ValidationError("Invalid JSON body");
   }
-  const report = data["csp-report"]
+  const report = data["csp-report"] as Record<string, unknown> | undefined;
 
   if (report) {
     console.warn("CSP Violation Detected:", {
@@ -24,10 +24,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       violatedDirective: report["violated-directive"],
       originalPolicy: report["original-policy"],
       disposition: report["disposition"],
-    })
+    });
   } else {
-    console.warn("Received report payload without 'csp-report' field:", data)
+    console.warn("Received report payload without 'csp-report' field:", data);
   }
 
-  return new NextResponse(null, { status: 204 })
-})
+  return new NextResponse(null, { status: 204 });
+});
+ 
