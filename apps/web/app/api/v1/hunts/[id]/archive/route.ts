@@ -5,10 +5,7 @@ import { rateLimit, getIP, rateLimitResponse } from "@/lib/rate-limit";
  * POST /api/v1/hunts/[id]/archive
  * Archive a hunt (hide from public but preserve data).
  */
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const ip = getIP(req);
   const { success, reset } = rateLimit(ip, { limit: 30, windowMs: 60 * 1000 });
 
@@ -16,7 +13,8 @@ export async function POST(
     return rateLimitResponse(reset);
   }
 
-  const huntId = parseInt(params.id, 10);
+  const { id } = await params;
+  const huntId = parseInt(id, 10);
   if (isNaN(huntId)) {
     return NextResponse.json({ error: "Invalid hunt ID" }, { status: 400 });
   }
@@ -27,13 +25,13 @@ export async function POST(
 
     if (action === "archive") {
       // Archive the hunt
-      const { archiveHunts } = await import("@/lib/huntStore");
-      archiveHunts([huntId]);
+      const { hideHuntsFromPublic } = await import("@/lib/huntStore");
+      hideHuntsFromPublic([huntId]);
       return NextResponse.json({ success: true, message: "Hunt archived successfully" });
     } else if (action === "unarchive") {
       // Unarchive the hunt
-      const { unarchiveHunts } = await import("@/lib/huntStore");
-      unarchiveHunts([huntId]);
+      const { unhideHuntsFromPublic } = await import("@/lib/huntStore");
+      unhideHuntsFromPublic([huntId]);
       return NextResponse.json({ success: true, message: "Hunt unarchived successfully" });
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
@@ -43,3 +41,4 @@ export async function POST(
     return NextResponse.json({ error: "Failed to archive hunt" }, { status: 500 });
   }
 }
+ 

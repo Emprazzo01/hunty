@@ -31,4 +31,4 @@ eslintConfig.push({
   },
 })
 
-export default eslintConfig
+export default eslintConfig;
