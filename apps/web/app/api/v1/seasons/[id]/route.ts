@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { getSeasonById, updateSeasonStatus, archiveSeason, getCurrentSeasonLeaderboard } from "@/lib/seasonStore";
+import {
+  getSeasonById,
+  updateSeasonStatus,
+  archiveSeason,
+  getCurrentSeasonLeaderboard,
+} from "@/lib/seasonStore";
 import { rateLimit, getIP, rateLimitResponse } from "@/lib/rate-limit";
 import { NotFoundError, ValidationError } from "@/lib/api/errors";
 import { withErrorHandling } from "@/lib/api/withErrorHandling";
+import type { SeasonStatus } from "@/lib/types";
 
 type Context = { params: Promise<{ id: string }> };
-
-import { getIP, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { archiveSeason, getCurrentSeasonLeaderboard,getSeasonById, updateSeasonStatus } from "@/lib/seasonStore";
 
 /**
  * GET /api/v1/seasons/[id]
@@ -72,7 +75,14 @@ export const PATCH = withErrorHandling<Context>(async (req, { params }) => {
   const { status } = body;
 
   if (status) {
-    updateSeasonStatus(seasonId, status);
+    const allowedStatuses: SeasonStatus[] = ["Upcoming", "Active", "Ended"];
+    if (!allowedStatuses.includes(status as SeasonStatus)) {
+      throw new ValidationError("Invalid season status", {
+        status,
+        allowed: allowedStatuses,
+      });
+    }
+    updateSeasonStatus(seasonId, status as SeasonStatus);
   }
 
   const updatedSeason = getSeasonById(seasonId);
@@ -117,3 +127,4 @@ export const POST = withErrorHandling<Context>(async (req, { params }) => {
   const archived = archiveSeason(seasonId, finalLeaderboard);
   return NextResponse.json({ archived }, { status: 200 });
 });
+ 

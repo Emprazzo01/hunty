@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
-import { getAllSeasons, getActiveSeason, createSeason, getCurrentSeasonLeaderboard } from "@/lib/seasonStore";
 import { rateLimit, getIP, rateLimitResponse } from "@/lib/rate-limit";
 import { NotFoundError, ValidationError } from "@/lib/api/errors";
 import { withErrorHandling } from "@/lib/api/withErrorHandling";
+import type { Reward } from "@/lib/types";
 
-import { getIP, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { archiveSeason, checkSeasonReset, createSeason, getActiveSeason, getAllSeasons, getCurrentSeasonLeaderboard } from "@/lib/seasonStore";
+import {
+  archiveSeason,
+  checkSeasonReset,
+  createSeason,
+  getActiveSeason,
+  getAllSeasons,
+  getCurrentSeasonLeaderboard,
+} from "@/lib/seasonStore";
 
 /**
  * GET /api/v1/seasons
@@ -52,7 +58,7 @@ export const POST = withErrorHandling(async (req: Request) => {
     return rateLimitResponse(reset);
   }
 
-  let body: { name?: string; startTime?: string; endTime?: string; rewards?: unknown };
+  let body: { name?: string; startTime?: string; endTime?: string; rewards?: Reward[] };
   try {
     body = await req.json();
   } catch {
@@ -76,3 +82,4 @@ export const POST = withErrorHandling(async (req: Request) => {
 
   return NextResponse.json({ season }, { status: 201 });
 });
+ 
