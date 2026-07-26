@@ -4,9 +4,6 @@ import { rateLimit, getIP, rateLimitResponse } from "@/lib/rate-limit";
 import { ValidationError } from "@/lib/api/errors";
 import { withErrorHandling } from "@/lib/api/withErrorHandling";
 
-import { getIP, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { awardSeasonBadge,getAllSeasonBadges, getPlayerSeasonBadges } from "@/lib/seasonStore";
-
 /**
  * GET /api/v1/seasons/badges
  * Get season badges for a player or all badges
@@ -58,3 +55,4 @@ export const POST = withErrorHandling(async (req: Request) => {
   const badge = awardSeasonBadge(seasonId, address, name, rank);
   return NextResponse.json({ badge }, { status: 201 });
 });
+ 
