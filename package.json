@@ -4,9 +4,9 @@
   "private": true,
   "description": "Cross-platform scavenger hunt dApp using Next.js, Expo, IPFS, and Stellar/Soroban.",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "start": "turbo run start",
+    "dev": "node api.js && turbo run dev",
+    "build": "node api.js && turbo run build",
+    "start": "node api.js && turbo run start",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "type-check": "turbo run typecheck",
