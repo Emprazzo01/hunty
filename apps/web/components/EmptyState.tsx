@@ -1,19 +1,19 @@
-import Link from "next/link"
-import type { ReactNode } from "react"
+import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 interface EmptyStateAction {
-  label: string
-  href?: string
-  onClick?: () => void
+  label: string;
+  href?: string;
+  onClick?: () => void;
 }
 
 interface EmptyStateProps {
-  icon: ReactNode
-  title: string
-  description: string
-  action: EmptyStateAction
+  icon: ReactNode;
+  title: string;
+  description: string;
+  action?: EmptyStateAction;
 }
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
@@ -23,18 +23,26 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         {icon}
       </div>
       <h2 className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
-      <div className="mt-6">
-        {action.href ? (
-          <Button asChild className="rounded-full px-6 py-3 text-sm font-semibold">
-            <Link href={action.href}>{action.label}</Link>
-          </Button>
-        ) : (
-          <Button onClick={action.onClick} className="rounded-full px-6 py-3 text-sm font-semibold">
-            {action.label}
-          </Button>
-        )}
-      </div>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">
+        {description}
+      </p>
+      {action && (
+        <div className="mt-6">
+          {action.href ? (
+            <Button asChild className="rounded-full px-6 py-3 text-sm font-semibold">
+              <Link href={action.href}>{action.label}</Link>
+            </Button>
+          ) : (
+            <Button
+              onClick={action.onClick}
+              className="rounded-full px-6 py-3 text-sm font-semibold"
+            >
+              {action.label}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
-  )
+  );
 }
+ 
